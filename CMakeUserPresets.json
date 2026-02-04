@@ -1,0 +1,40 @@
+{
+	"version": 6,
+	"cmakeMinimumRequired": {
+		"major": 3,
+		"minor": 31
+	},
+	"configurePresets": [
+		{
+			"name": "ninja-debug",
+			"displayName": "Debug Ninja preset",
+			"inherits": "default",
+			"generator": "Ninja",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Debug"
+			}
+		}
+	],
+	"buildPresets": [
+		{
+			"name": "ninja-debug",
+			"displayName": "Debug Ninja preset",
+			"configurePreset": "ninja-debug"
+		}
+	],
+    "workflowPresets": [
+		{
+			"name": "ninja-debug",
+			"steps": [
+				{
+					"name": "ninja-debug",
+					"type": "configure"
+				},
+				{
+					"name": "ninja-debug",
+					"type": "build"
+				}
+			]
+		}
+	]
+}
