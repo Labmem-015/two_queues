@@ -1,4 +1,4 @@
-# # About the project
+# About the project
 
 Implementation of processing two queues. It's better to be lockfree. Coroutines are not allowed.
 
