@@ -1,6 +1,6 @@
 # About the project
 
-Implementation of processing two queues. It's better to be lockfree. Coroutines are not allowed.
+Implementation of processing two queues. It's better to be lockfree. Coroutines are not allowed in queues processing.
 
 # How to build
 
