@@ -1,9 +1,21 @@
 #pragma once
+#include <cstring>
 #include <cstdint>
 #include <cstdlib>
 
 #include <queue>
 #include <print>
+#include <format>
 #include <iostream>
 #include <atomic>
 #include <condition_variable>
+#include <random>
+#include <coroutine>
+#include <memory>
+#include <thread>
+#include <chrono>
+#include <limits>
+#include <charconv>
+#include <utility>
+#include <algorithm>
+#include <type_traits>

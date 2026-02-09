@@ -21,11 +21,28 @@ add_compile_options(
 add_library(pch STATIC src/pch/dummy_pch.cpp)
 target_precompile_headers(pch PUBLIC src/pch/pch.hpp)
 
-file(GLOB cpp_files CONFIGURE_DEPENDS src/*.cpp)
-file(GLOB hpp_files CONFIGURE_DEPENDS src/*.hpp)
-
-add_executable(two_queues ${hpp_files} ${cpp_files})
+add_executable(two_queues 
+	src/main.cpp
+	src/data_producer.hpp
+	src/data_consumer.hpp
+	src/queues_processor.hpp
+)
 target_precompile_headers(two_queues REUSE_FROM pch)
 
 find_package(boost_json CONFIG REQUIRED)
 target_link_libraries(two_queues PRIVATE Boost::json)
+
+
+add_executable(string_generator
+	src/test/string_generator.cpp
+	src/data_producer.hpp
+)
+target_precompile_headers(string_generator REUSE_FROM pch)
+
+
+add_executable(string_consumer
+	src/test/string_consumer.cpp
+	src/data_consumer.hpp
+	src/data_producer.hpp
+)
+target_precompile_headers(string_consumer REUSE_FROM pch)
