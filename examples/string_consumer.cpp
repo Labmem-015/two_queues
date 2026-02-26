@@ -1,4 +1,4 @@
-#include "../data_consumer.hpp"
+#include <data_consumer.hpp>
 
 int main(int argc, char* argv[]) {
     try{
