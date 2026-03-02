@@ -8,25 +8,31 @@ int main(int argc, char* argv[]) {
         consumer.set_queue(requests_queue);
         std::string cmd;
         // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::cout << "Enter 'q' or 'quit' to finish the program" << std::endl;
-        while(cmd != "q" or cmd != "quit") {
+        while(true) {
+            std::cout << "Enter 'q' or 'quit' to finish the program" << std::endl;
             std::cout << "Enter command in format: <seconds_to_aio_wait> <some_text>" << std::endl;
             std::getline(std::cin, cmd);
-            std::string_view view = cmd;
-            if (cmd.empty()) {
+            if (cmd == "q" or cmd == "quit") {
+                break;
+            }
+            if (cmd.empty()) [[unlikely]] {
                 continue;
             }
+            
+            std::string_view view = cmd;
             size_t pos = view.find_first_of(" ");
             if (pos == 0) {
                 pos = view.find_first_of(" ");
             }
             if (pos == std::string::npos) {
                 std::cout << "Invalid command, retry." << std::endl;
+                continue;
             }
             int seconds;
             auto fc_result = std::from_chars(view.data(), view.data() + pos + 1, seconds);
             if (fc_result.ec != std::errc()) {
                 std::cout << "Error, while parsing seconds. Errc: " << (int)fc_result.ec << std::endl;
+                continue;
             }
             std::chrono::duration<int> duration{std::chrono::seconds{5}};
             
