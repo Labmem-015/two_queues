@@ -17,23 +17,30 @@ target_precompile_headers(pch PUBLIC pch/pch.hpp)
 
 file(GLOB src_files CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/src/*.cpp)
 
-add_library(lockfree STATIC ${src_files})
-target_precompile_headers(lockfree REUSE_FROM pch)
-target_include_directories(lockfree PUBLIC ${PROJECT_SOURCE_DIR}/include)
+add_library(core STATIC ${src_files})
+target_precompile_headers(core REUSE_FROM pch)
+target_include_directories(core PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/main.cpp)
-target_precompile_headers(${PROJECT_NAME} REUSE_FROM pch)
-target_link_libraries(${PROJECT_NAME} PRIVATE lockfree)
+add_executable(main ${PROJECT_SOURCE_DIR}/main.cpp)
+target_precompile_headers(main REUSE_FROM pch)
+target_link_libraries(main PRIVATE core)
 
-add_executable(string_generator
-	${PROJECT_SOURCE_DIR}/examples/string_generator.cpp
+add_executable(string_producer
+	${PROJECT_SOURCE_DIR}/examples/string_producer.cpp
 )
-target_precompile_headers(string_generator REUSE_FROM pch)
-target_link_libraries(string_generator PRIVATE lockfree)
+target_precompile_headers(string_producer REUSE_FROM pch)
+target_link_libraries(string_producer PRIVATE core)
 
 
 add_executable(string_consumer
 	${PROJECT_SOURCE_DIR}/examples/string_consumer.cpp
 )
 target_precompile_headers(string_consumer REUSE_FROM pch)
-target_link_libraries(string_consumer PRIVATE lockfree)
+target_link_libraries(string_consumer PRIVATE core)
+
+
+add_executable(string_processor
+	${PROJECT_SOURCE_DIR}/examples/string_processor.cpp
+)
+target_precompile_headers(string_processor REUSE_FROM pch)
+target_link_libraries(string_processor PRIVATE core)

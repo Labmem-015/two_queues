@@ -1,11 +1,3 @@
-/**
- * We need to produce packages with provided (allocated) buffers.
- * Those packages should be considered as requests from consumer with a pointer to a buffer
- * where payload will be written.
- * 
- * Also we have to produce payloads. And by condition of the problem we must copy data
- * from producer queue to consumer queue. 
- */
 #pragma once
 
 struct Data {
@@ -33,7 +25,22 @@ public:
     m_digit_gen(0, 9),
     m_lower_case_gen('a', 'z'),
     m_upper_case_gen('A', 'Z'),
-    m_special_char_gen(32, 47) {}
+    m_special_char_gen(32, 47),
+    m_length_gen(1,25) {}
+    
+    Data* produce() {
+        auto str1_len = m_length_gen(m_rng);
+        auto str2_len = m_length_gen(m_rng);
+        Data* data = static_cast<Data*>(malloc(sizeof(Data) + str1_len + str2_len));
+        data->total_size + str1_len + str2_len;
+        data->str1_offset = sizeof(Data);
+        data->str2_offset = sizeof(Data) + str2_len;
+        std::string_view str1 = generate_string(str1_len);
+        std::string_view str2 = generate_string(str2_len);
+        memcpy(data + data->str1_offset, str1.data(), str1.size());
+        memcpy(data + data->str2_offset, str2.data(), str2.size());
+        return data;
+    }
 
     std::string generate_string(size_t len) {
         std::string output_str;
@@ -72,4 +79,6 @@ private:
     int_distro_t m_lower_case_gen;
     int_distro_t m_upper_case_gen;
     int_distro_t m_special_char_gen;
+    int_distro_t m_length_gen;
+
 };

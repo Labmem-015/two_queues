@@ -1,4 +1,4 @@
-#include <data_consumer.hpp>
+#include <consumer.hpp>
 
 int main(int argc, char* argv[]) {
     try{
@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
             auto payload = view.substr(pos);
 
             std::print("Before consume. tId: {}\n", std::this_thread::get_id());
-            RequestTask task = consumer.consume();
+            auto req= consumer.create_request;
             std::print("After consume. tId: {}\n", std::this_thread::get_id());
             
             // Simple processing...
@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
             if (req->coro_handle != task.coro_handle) {
                 throw std::runtime_error("Desync requests processing");
             }
-            memcpy(req->response, payload.data(), std::min(req->response_size, payload.size()));                
+            memcpy(req->buffer, payload.data(), std::min(req->buffer_size, payload.size()));                
             if (req->coro_handle) {
                 req->coro_handle.resume();
             } else {

@@ -20,7 +20,7 @@ struct Task {
         }
         
         void return_value(T value) {
-            std::print("Calling return_void in promise_object\n");
+            std::print("Calling return_value in promise_object\n");
             this->value = value;
         }
         
@@ -54,8 +54,8 @@ struct Task {
 struct Request;
 using RequestTask = Task<Request*>;
 struct Request {
-    char* response;
-    size_t response_size = 0;
+    char* buffer;
+    size_t buffer_size = 0;
     RequestTask::coro_handle_t coro_handle;
     std::atomic_bool is_ready = false;
     bool is_last = false;
@@ -65,7 +65,7 @@ struct Request {
     Request(Request&&) = default;
 };
 
-struct AsyncResponse {
+struct Awaitable {
     struct Awaiter {
         Awaiter(Request* req) : request(req) {}
 
@@ -87,7 +87,7 @@ struct AsyncResponse {
         Request* request;
     };
 
-    AsyncResponse(Request* req) : m_awaiter(req) {}
+    Awaitable(Request* req) : m_awaiter(req) {}
 
     Awaiter operator co_await() {
         return m_awaiter;
