@@ -1,11 +1,18 @@
 #include <consumer.hpp>
 
+void complete_request(Request* req) {
+    if (req->task.coro_handle) {
+        std::print("Resuming coro. tId: {}\n", std::this_thread::get_id());
+        req->task.coro_handle.resume();
+    } else {
+        throw std::runtime_error("Coro handle is destroyed before having chance to resume it.");
+    }
+}
+
 int main(int argc, char* argv[]) {
     try{
         std::cout << "Start" << std::endl;
-        auto requests_queue = std::make_shared<std::queue<Request*>>();;
         Consumer consumer;
-        consumer.set_queue(requests_queue);
         std::string cmd;
         // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         while(true) {
@@ -38,22 +45,12 @@ int main(int argc, char* argv[]) {
             
             auto payload = view.substr(pos);
 
-            std::print("Before consume. tId: {}\n", std::this_thread::get_id());
-            auto req= consumer.create_request;
-            std::print("After consume. tId: {}\n", std::this_thread::get_id());
-            
+            std::print("Creating request. tId: {}\n", std::this_thread::get_id());
+            auto req = consumer.create_request();
+
             // Simple processing...
-            Request* req{requests_queue->front()};
-            requests_queue->pop();
-            if (req->coro_handle != task.coro_handle) {
-                throw std::runtime_error("Desync requests processing");
-            }
             memcpy(req->buffer, payload.data(), std::min(req->buffer_size, payload.size()));                
-            if (req->coro_handle) {
-                req->coro_handle.resume();
-            } else {
-                throw std::runtime_error("Coro handle is destroyed in simple processing routine");
-            }
+            complete_request(req);
         }
     } catch (const std::exception &e) {
         std::cout << "Error: " << e.what() << std::endl;

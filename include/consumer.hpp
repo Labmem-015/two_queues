@@ -2,9 +2,22 @@
 
 #include <async.hpp>
 
+struct Request {
+    char* buffer;
+    size_t buffer_size = 0;
+    Task<Request*> task;
+    std::atomic_bool is_ready = false;
+    bool is_last = false;
+
+    Request() = default;
+    Request(const Request&) = delete;
+    Request(Request&&) = default;
+};
+
+
 class Consumer {
 public:
-    [[maybe_unused]] RequestTask deferred_consume(Request* req) {
+    [[maybe_unused]] Task<Request*> deferred_consume(Request* req) {
         // async wait for request to be resumed in processor
         Request* response = co_await Awaitable(req);
         std::string_view result{response->buffer, response->buffer_size};
@@ -16,17 +29,10 @@ public:
         Request *req = new Request;
         req->buffer = new char[m_response_size];
         req->buffer_size = m_response_size;
-        auto task = deferred_consume(req);
-        m_tasks.emplace(task);
+        req->task = deferred_consume(req);
         return req;
     }
 
-    void set_queue(std::shared_ptr<std::queue<Request*>> queue) {
-        m_queue_of_sent = queue;
-    }
 private:
-    std::shared_ptr<std::queue<Request*>> m_queue_of_sent;
     static constexpr const size_t m_response_size = 10;
-    std::atomic_bool m_is_running = true;
-    std::queue<RequestTask> m_tasks;
 };

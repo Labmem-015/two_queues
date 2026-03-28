@@ -3,12 +3,12 @@
 template <typename T>
 requires (!std::is_void_v<T>)
 struct Task {
-    struct Promise;
-    using promise_type = Promise;
+    struct promise_type;
     using coro_handle_t = std::coroutine_handle<promise_type>;
-    struct Promise {
-        auto get_return_object() -> std::coroutine_handle<Promise> {
-            return std::coroutine_handle<Promise>::from_promise(*this);
+
+    struct promise_type {
+        auto get_return_object() -> coro_handle_t {
+            return coro_handle_t::from_promise(*this);
         }
         
         std::suspend_never initial_suspend() noexcept {
@@ -32,6 +32,13 @@ struct Task {
         T value;
     };
 
+    Task() = default;
+    Task(const Task<T>&) = delete;
+    Task(Task<T>&&) = default;
+
+    Task<T>& operator=(const Task<T>&) = delete;
+    Task<T>& operator=(Task<T>&&) = default;
+
     Task(coro_handle_t handle) : coro_handle( handle) {
         std::print("Task has been created\n");
     }
@@ -51,43 +58,32 @@ struct Task {
     coro_handle_t coro_handle;
 };
 
-struct Request;
-using RequestTask = Task<Request*>;
-struct Request {
-    char* buffer;
-    size_t buffer_size = 0;
-    RequestTask::coro_handle_t coro_handle;
-    std::atomic_bool is_ready = false;
-    bool is_last = false;
 
-    Request() = default;
-    Request(const Request&) = delete;
-    Request(Request&&) = default;
-};
 
+template <typename T>
+requires (!std::is_void_v<T>)
 struct Awaitable {
     struct Awaiter {
-        Awaiter(Request* req) : request(req) {}
+        Awaiter(T value) : value(value) {}
 
         bool await_ready() {
             return false;
         }
 
-        void await_suspend(RequestTask::coro_handle_t handle) noexcept {
-            request->coro_handle = handle;
+        void await_suspend(Task<T>::coro_handle_t handle) noexcept {
             std::print("Setting coro_handle and suspend. tID: {}\n", std::this_thread::get_id());
         }
 
-        Request* await_resume() noexcept {
+        T await_resume() noexcept {
             std::print("Resuming coroutine. tID: {}\n", std::this_thread::get_id());
-            return request;
+            return value;
         }
 
     private:
-        Request* request;
+        T value;
     };
 
-    Awaitable(Request* req) : m_awaiter(req) {}
+    Awaitable(T value) : m_awaiter(value) {}
 
     Awaiter operator co_await() {
         return m_awaiter;
