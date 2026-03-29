@@ -17,7 +17,7 @@ struct Request {
 
 class Consumer {
 public:
-    [[maybe_unused]] Task<Request*> deferred_consume(Request* req) {
+    Task<Request*> deferred_consume(Request* req) {
         // async wait for request to be resumed in processor
         Request* response = co_await Awaitable(req);
         std::string_view result{response->buffer, response->buffer_size};

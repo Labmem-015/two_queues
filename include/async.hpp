@@ -1,5 +1,7 @@
 #pragma once
 
+int counter = 0;
+
 template <typename T>
 requires (!std::is_void_v<T>)
 struct Task {
@@ -32,23 +34,42 @@ struct Task {
         T value;
     };
 
-    Task() = default;
-    Task(const Task<T>&) = delete;
-    Task(Task<T>&&) = default;
-
-    Task<T>& operator=(const Task<T>&) = delete;
-    Task<T>& operator=(Task<T>&&) = default;
+    Task() {
+        id = counter++;
+        std::print("Default Task {} ctor\n", id);
+    }
 
     Task(coro_handle_t handle) : coro_handle( handle) {
-        std::print("Task has been created\n");
+        id = counter++;
+        std::print("Task {} has been created from coro_handle\n", id);
+    }
+
+    Task(const Task<T>&) = delete;
+    Task(Task<T>&& other) : coro_handle(other.coro_handle) {
+        id = counter++;
+        std::print("Move Task {} ctor\n", id);
+        other.coro_handle = nullptr;
+    }
+
+    Task<T>& operator=(const Task<T>&) = delete;
+    Task<T>& operator=(Task<T>&& other) {
+        std::print("Move Task {} assignment operator\n", id);
+        if (coro_handle) {
+            coro_handle.destroy();
+            coro_handle = other.coro_handle;
+            other.coro_handle = nullptr;
+        } else {
+            coro_handle = other.coro_handle;
+            other.coro_handle = nullptr;
+        }
+        return *this;
     }
 
     ~Task() {
-        std::print("Destoying target\n");
+        std::print("Destoying Task {}\n", id);
         if(coro_handle) {
             coro_handle.destroy();
         }
-        std::print("Target has been destroyed\n");
     }
     
     T get_value() {
@@ -56,6 +77,7 @@ struct Task {
     }
 
     coro_handle_t coro_handle;
+    int id = -1;
 };
 
 

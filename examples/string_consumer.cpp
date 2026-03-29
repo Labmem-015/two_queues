@@ -16,7 +16,7 @@ int main(int argc, char* argv[]) {
         std::string cmd;
         // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         while(true) {
-            std::cout << "Enter 'q' or 'quit' to finish the program" << std::endl;
+            std::cout << "\nEnter 'q' or 'quit' to finish the program" << std::endl;
             std::cout << "Enter command in format: <seconds_to_aio_wait> <some_text>" << std::endl;
             std::getline(std::cin, cmd);
             if (cmd == "q" or cmd == "quit") {
