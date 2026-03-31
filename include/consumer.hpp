@@ -3,11 +3,11 @@
 #include <async.hpp>
 
 struct Request {
-    char* buffer;
-    size_t buffer_size = 0;
+    char* buffer{nullptr};
+    size_t buffer_size{0};
     Task<Request*> task;
-    std::atomic_bool is_ready = false;
-    bool is_last = false;
+    std::atomic_bool is_ready{false};
+    bool is_last{false};
 
     Request() = default;
     Request(const Request&) = delete;
@@ -16,15 +16,15 @@ struct Request {
 
 
 class Consumer {
-public:
     Task<Request*> deferred_consume(Request* req) {
         // async wait for request to be resumed in processor
         Request* response = co_await Awaitable(req);
         std::string_view result{response->buffer, response->buffer_size};
         std::print("Response is: {}. tId: {}\n", result, std::this_thread::get_id());
         delete response;
+        co_return nullptr; // crutch
     }
-
+public:
     Request* create_request() {
         Request *req = new Request;
         req->buffer = new char[m_response_size];
