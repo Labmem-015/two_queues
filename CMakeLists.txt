@@ -3,7 +3,7 @@ cmake_policy(VERSION 3.31)
 
 # Those options may be set in the preset file
 set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_C_STANDARD 23)
+set(CMAKE_C_STANDARD 17)
 
 project(two_queues DESCRIPTION "Processing two queues." VERSION 1.0.0 LANGUAGES CXX)
 
@@ -44,3 +44,6 @@ add_executable(string_processor
 )
 target_precompile_headers(string_processor REUSE_FROM pch)
 target_link_libraries(string_processor PRIVATE core)
+
+add_executable(iterators ${PROJECT_SOURCE_DIR}/examples/iterators.cpp)
+target_precompile_headers(iterators REUSE_FROM pch)
