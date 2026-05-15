@@ -1,0 +1,9 @@
+CompileFlags:
+  Add: [-std=c++23, -Wall]
+  CompilationDatabase: "build/ninja-debug"
+
+Diagnostics:
+  UnusedIncludes: Strict
+
+Index:
+  Background: Build
