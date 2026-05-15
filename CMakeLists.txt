@@ -47,3 +47,4 @@ target_link_libraries(string_processor PRIVATE core)
 
 add_executable(iterators ${PROJECT_SOURCE_DIR}/examples/iterators.cpp)
 target_precompile_headers(iterators REUSE_FROM pch)
+target_link_libraries(iterators PRIVATE core)

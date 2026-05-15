@@ -1,17 +1,15 @@
-struct Object {
-  void print() { std::print("Hello, World\n"); }
-  int value = 777;
-};
+#include <queue.hpp>
 
-template <typename T> struct iter {
-  T *ptr = nullptr;
-  T *operator->() const { return ptr; }
-  T &operator*() const { return *ptr; }
+struct Object {
+  int var = 77;
 };
 
 int main(int, char *[]) {
-  iter<Object> i;
-  i.ptr = new Object;
-  i->print();
-  return i.ptr != std::addressof(*i);
+  std::vector<int> vec;
+  auto it = vec.front();
+  Queue<Object> q;
+  // iter<Object> i;
+  // i.ptr = new Object;
+  // i->print();
+  // return i.ptr != std::addressof(*i);
 }
