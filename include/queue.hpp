@@ -2,7 +2,7 @@
 
 namespace details {
 template <typename T> struct Node {
-  // TODO: Make those ptrs atomic
+  // TODO: Make those ptrs secured with mutexes
   Node *next = nullptr;
   Node *prev = nullptr;
   T *data = nullptr;

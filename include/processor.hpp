@@ -6,8 +6,9 @@
 
 /**
  * We need to produce requests with a pointers to provided (allocated) buffers.
- * Those requests should be incouming from consumer.
- * Producer generates data, which will be written in consumer provided buffer.
+ * Those requests should income from consumer.
+ * Producer generates data, which will be written in the consumer's provided
+ * buffer.
  *
  * By condition of the problem we must copy data
  * from producer's queue to consumer's queue.
