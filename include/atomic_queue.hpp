@@ -36,6 +36,7 @@ public:
       expected = false;
     }
     if (!m_size) {
+      m_busy.store(false, std::memory_order::release);
       throw std::runtime_error{"AtomicQueue is empty!"};
     }
     auto *node = m_head.load(std::memory_order::relaxed);
@@ -53,7 +54,7 @@ public:
     return ret;
   }
 
-  virtual ~AtomicQueue<T>() {
+  ~AtomicQueue<T>() noexcept {
     while (get_size()) {
       pop();
     }
