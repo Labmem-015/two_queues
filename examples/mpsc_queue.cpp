@@ -17,7 +17,35 @@ struct Payload {
   std::string message;
 };
 
+void loop(int, char *[]);
+void simple();
+
 int main(int argv, char *argc[]) {
+  simple();
+  // loop(argv, argc);
+  return 0;
+}
+
+void simple() {
+  std::print("Start\n");
+  AtomicQueue<Payload> mpsc;
+  for (int i = 0; i < 3; ++i) {
+    Payload data;
+    data.log_id = i;
+    mpsc.push(data);
+  }
+  for (int i = 0; i < 4; ++i) {
+    try {
+
+      auto data = mpsc.pop();
+      std::print("i: {}\n", data.log_id);
+    } catch (const std::exception &e) {
+      std::print("Catched exception. What: {}\n", e.what());
+    }
+  }
+}
+
+void loop(int argv, char *argc[]) {
   int thr_num = 2;
   if (argv == 2) {
     thr_num = std::stoi(argc[1]);
@@ -48,5 +76,4 @@ int main(int argv, char *argc[]) {
     std::print("Received data in {}mcs. {}", diff.count(), data.message);
   }};
   std::this_thread::sleep_for(1s);
-  return 0;
 }

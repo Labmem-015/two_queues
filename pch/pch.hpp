@@ -10,6 +10,7 @@
 #include <chrono>
 #include <condition_variable>
 #include <coroutine>
+#include <exception>
 #include <format>
 #include <iostream>
 #include <limits>
