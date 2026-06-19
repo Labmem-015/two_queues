@@ -42,7 +42,7 @@ int main(int argv, char *argc[]) {
     });
   }
 
-  std::jthread consumer{[&mpsc, &start](std::stop_token) {
+  std::jthread consumer{[&mpsc](std::stop_token) {
     auto data = mpsc.pop();
     auto diff = duration_cast<microseconds>(steady_clock::now() - data.time);
     std::print("Received data in {}mcs. {}", diff.count(), data.message);
